@@ -24,7 +24,13 @@ const ConversationPage = () => {
     const [images, setImages] = useState<string[]>([]);
     const [isMounted, setIsMounted] = useState(false);
 
-   
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isMounted) {
+        return null;
+    }
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -35,14 +41,6 @@ const ConversationPage = () => {
         }
     });
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    if (!isMounted) {
-        return null;
-    }
-    
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
