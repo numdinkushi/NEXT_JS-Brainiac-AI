@@ -19,18 +19,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 
-const ConversationPage = () => {
-    const router = useRouter();
+const ImagePage = () => {
     const [images, setImages] = useState<string[]>([]);
     const [isMounted, setIsMounted] = useState(false);
+    const router = useRouter();
+    
+    // useEffect(() => {
+    //     setIsMounted(true);
+    // }, []);
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    if (!isMounted) {
-        return null;
-    }
+    // if (!isMounted) {
+    //     return null;
+    // }
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -171,4 +171,4 @@ const ConversationPage = () => {
     );
 };
 
-export default ConversationPage;
+export default ImagePage;
