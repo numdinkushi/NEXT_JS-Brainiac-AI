@@ -15,11 +15,13 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
+import { usePromodal } from "@/app/hooks/use-pro-modal";
 
 const MusicPage = () => {
     const router = useRouter();
     const [music, setMusic] = useState<string>();
-
+    const proModal = usePromodal();
+    
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -37,7 +39,9 @@ const MusicPage = () => {
             setMusic(response.data.audio);
             form.reset();
         } catch (error: any) {
-            //TODO open pro Modal
+            if (error?.response?.status === 403) {
+                proModal.onOpen();
+            }
         } finally {
             router.refresh();
         }
