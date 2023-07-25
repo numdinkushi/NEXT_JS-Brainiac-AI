@@ -18,12 +18,14 @@ import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
+import { usePromodal } from "@/app/hooks/use-pro-modal";
 
 const ImagePage = () => {
     const [images, setImages] = useState<string[]>([]);
     const [isMounted, setIsMounted] = useState(false);
     const router = useRouter();
-    
+    const proModal = usePromodal();
+
     // useEffect(() => {
     //     setIsMounted(true);
     // }, []);
@@ -55,7 +57,9 @@ const ImagePage = () => {
             setImages(urls);
             form.reset();
         } catch (error: any) {
-            //TODO open pro Modal
+            if (error?.response?.status === 403) {
+                proModal.onOpen();
+            }
             console.log(error);
         } finally {
             router.refresh();

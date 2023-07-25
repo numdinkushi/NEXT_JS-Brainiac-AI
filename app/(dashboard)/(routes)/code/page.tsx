@@ -50,7 +50,9 @@ const CodePage = () => {
 
             form.reset();
         } catch (error: any) {
-            //TODO open pro Modal
+            if (error?.response?.status === 403) {
+                proModal.onOpen();
+            }
             console.log(error);
         } finally {
             router.refresh();
