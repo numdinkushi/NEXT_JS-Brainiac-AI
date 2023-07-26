@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
 import { checkApiLimit, increaseApiLimit } from "@/lib/api-limit";
+import { checkSubscription } from "@/lib/subscription";
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
@@ -12,7 +13,7 @@ const openai = new OpenAIApi(configuration);
 const instructionMessage: ChatCompletionRequestMessage = {
     role: "system",
     "content": "You are a code generator. You must answer only in code snippets. Use code comments for explanations."
-}
+};
 
 export async function POST(req: Request) {
     try {
@@ -34,7 +35,9 @@ export async function POST(req: Request) {
 
         const freeTrial = await checkApiLimit();
 
-        if (!freeTrial) {
+        const isPro = await checkSubscription();
+
+        if (!freeTrial && !isPro) {
             return new NextResponse("Free trial has expired", { status: 403 });
         }
 
@@ -43,9 +46,12 @@ export async function POST(req: Request) {
             messages: [instructionMessage, ...messages]
         });
 
-        await increaseApiLimit()
-        return NextResponse.json(response.data.choices[0].message);
+        if (!isPro) {
+            await increaseApiLimit();
+        }
         
+        return NextResponse.json(response.data.choices[0].message);
+
     } catch (error) {
         console.log("[CODE_ERROR", error);
         return new NextResponse("Internal error", { status: 500 });
