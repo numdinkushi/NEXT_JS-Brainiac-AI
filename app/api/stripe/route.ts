@@ -7,6 +7,8 @@ import { absoluteUrl } from "@/lib/utils";
 
 const settingsUrl = absoluteUrl("/settings");
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     try {
         const { userId } = auth();
@@ -58,7 +60,7 @@ export async function GET() {
             }
         });
 
-        return new NextResponse(JSON.stringify({url: stripeSession.url}))
+        return new NextResponse(JSON.stringify({ url: stripeSession.url }));
     } catch (error) {
         console.log("[STRIPE_ERROR]", error);
     }
