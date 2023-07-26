@@ -15,12 +15,13 @@ import { useRouter } from "next/navigation";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
 import { usePromodal } from "@/app/hooks/use-pro-modal";
+import { toast } from "react-hot-toast";
 
 const VideoPage = () => {
     const router = useRouter();
     const [video, setVideo] = useState<string>();
     const proModal = usePromodal();
-    
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -39,7 +40,10 @@ const VideoPage = () => {
         } catch (error: any) {
             if (error?.response?.status === 403) {
                 proModal.onOpen();
-            } console.log(error);
+            } else {
+                toast.error("Something went wrong");
+            }
+            console.log(error);
         } finally {
             router.refresh();
         }
